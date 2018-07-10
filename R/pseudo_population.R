@@ -100,7 +100,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     ### Bootstrap replicates ---
     Vb <- vector('numeric', length = D)
     for(d in seq_len(D) ){
-
+        
         Uc <- select_Uc()
         U  <- c( Uf, Uc)
         n1 <- ifelse(is.null(Uc) & identical(method, 'Sitter'), n-1, n)
@@ -121,9 +121,124 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 
 
 
-ppBS_ups <- function(y, pik, B, D) {
+
+
+#' Pseudo-population bootstrap for simple random sampling
+#'
+#' @param y vector of sample values
+#' @param x vector of length N with values of the auxiliary variable for all population units,
+#'     only required if method "HotDeck" is chosen
+#' @param s logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
+#'     Alternatively, a vector of length n with the indices of the sample units
+#' @param B scalar, number of bootstrap replications
+#' @param D scalar, number of replications for the double bootstrap
+#' @param method a string indicating the bootstrap method to be used, available
+#'     methods are: 'Gross', 'Booth', 'ChaoLo85', 'ChaoLo94', 'BickelFreedman', 'Sitter'
+#' @param design sampling procedure to be used for sample selection.
+#'        Either a string indicating the name of the sampling design or a function;
+#'        see section "Details" for more information.
+#'
+#' @details
+#' Argument \code{design} accepts either a string indicating the sampling design
+#' to use to draw samples or a function.
+#' Accepted designs are "brewer", "tille", "maxEntropy", "poisson",
+#' "sampford", "systematic", "randomSystematic".
+#' The user may also pass a function as argument; such function should take as input
+#' a vector of length N of inclusion probabilities and return a vector of length N,
+#' either logical or a vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
+#' units and \code{FALSE} or \code{0} indicate non-sample units.
+#' 
+#' 
+#' @references
+#' Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
+#' finite population sampling. Statistics Surveys 10 1-52.
+#' 
+
+ppBS_ups <- function(y, x = NULL, pik, B, D=1, method, design) {
+    
+    ### Check input ---
+    method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
+    
+    if( !is.function(design) ){
+        design <- match.arg(design, c('brewer',
+                                      'tille',
+                                      'maxEntropy',
+                                      'randomSystematic',
+                                      'sampford',
+                                      'poisson',
+                                      'systematic')
+        )
+    }
     
     
+    ### Initialisation ---
+    if( is.character(design)){
+        # sampling function
+        smplFUN <- switch(EXPR=design,
+                          'brewer' = sampling::UPbrewer,
+                          'tille' = sampling::UPtille,
+                          'maxEntropy' = sampling::maxEntropy,
+                          'randomSystematic' = sampling::UPrandomsystematic,
+                          'sampford' = sampling::UPsampford,
+                          'poisson' = 
+                              function(pik){
+                                  ss <- 0
+                                  while(ss < 2){
+                                      s  <- sampling::UPpoisson( pik )
+                                      ss <- sum(s)
+                                  }
+                                  return( s )
+                              },
+                          'systematic' = sampling::UPsystematic
+        )
+    }else if( is.function(design) ){
+        smplFUN <- design
+    }else stop("Argument design is not well-specified: it should be either a string representing ",
+               "one of the available sampling designs or an object of class function!")
     
+    ## Create finite part of pseudo-population
+    n <- length(ys)
+    if( identical(method, 'HotDeck') ){
+        U <- vector('numeric', length = length(x) )
+        xs <- x[s]
+        j  <- sapply(x[!s], function(xi) which.min( abs(xi-xs) ) )
+        U[s] <- y
+        U[!s] <- y[j]
+        xb <- x
+        xb[!s] <- xs[j]
+        pkb <- sampling::inclusionprobabilities(xb, n)
+    } else {
+        r    <- 1/pik
+        rint <- as.integer(r)
+        rp   <- ( r - rint )
+        Uf   <- rep(y, times = rint )
+    }
+    
+    ### Bootstrap replicates ---
+    Vb <- vector('numeric', length = D)
+    for(d in seq_len(D) ){
+        
+        tot <- vector('numeric', length = B)
+        for(b in seq_len(B)){
+            ## random part of pseudo-population
+            if( method %in% c('Holmberg', 'Chauvet') ){
+                Uc  <- as.logical( sampling::UPpoisson(rp) )
+                U  <- c(Uf, y[Uc])
+                pkb <- c( rep(pik, times=rint), pik[Uc] )
+                if( identical(method, 'Holmberg') )
+                    pkb <- drop( sampling::inclusionprobabilities(pkb, n) )
+            }
+            
+            #select resample
+            sb <- smplFUN( pkb )
+            tot[b] <- drop( sampling::HTestimator(U[sb], pkb[sb]) )
+        }
+        Vb[d] <- var(tot)
+    }
+    
+    ### Return results ---
+    return( mean(Vb) )
     
 }
+
+

@@ -1,9 +1,16 @@
 ---
-title: "README.Rmd"
-author: "Roberto Sichera"
-date: "22/06/2018"
 output: github_document
 ---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
 
 # bootstrapFP
 
@@ -16,6 +23,7 @@ output: github_document
 
 This package provides bootstrap algorithms for Finite Population inference, for
 the estimation of variance of the Horvitz--Thompson estimator.
+
 
 ## Installation
 

@@ -129,7 +129,8 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' @param x vector of length N with values of the auxiliary variable for all population units,
 #'     only required if method "HotDeck" is chosen
 #' @param s logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
-#'     Alternatively, a vector of length n with the indices of the sample units
+#'     Alternatively, a vector of length n with the indices of the sample units.
+#'     Only required for "HotDeck" method.
 #' @param B scalar, number of bootstrap replications
 #' @param D scalar, number of replications for the double bootstrap
 #' @param method a string indicating the bootstrap method to be used, available
@@ -154,7 +155,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' finite population sampling. Statistics Surveys 10 1-52.
 #' 
 
-ppBS_ups <- function(y, x = NULL, pik, B, D=1, method, design) {
+ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
     
     ### Check input ---
     method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )

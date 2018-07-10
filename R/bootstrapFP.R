@@ -12,11 +12,12 @@
 #' @param design sampling procedure to be used for sample selection.
 #'        Either a string indicating the name of the sampling design or a function;
 #'        see section "Details" for more information.
-#'
-#'
-#'
-#'
-#'
+#' @param x vector of length N with values of the auxiliary variable for all population units,
+#'     only required if method "ppHotDeck" is chosen
+#' @param s logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
+#'     Alternatively, a vector of length n with the indices of the sample units.
+#'     Only required for "ppHotDeck" method.
+#'        
 #'
 #'
 #' @details
@@ -44,6 +45,7 @@
 #'     \item "ppBooth" [SRSWOR]
 #'     \item "ppChaoLo85" [SRSWOR]
 #'     \item "ppChaoLo94" [SRSWOR]
+#'     \item "ppBickelFreedman" [SRSWOR]
 #'     \item "ppSitter" [SRSWOR]
 #'     
 #'     \item "ppHolmberg" [UPSWOR]
@@ -80,12 +82,14 @@
 #' 
 #' 
 #' @export
+#' 
+#' @import sampling 
 #'
 
 
 
 
-bootstrapFP <- function(y, pik, B, D=1, method, design ){
+bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL ){
     
     
     ### Check input ---
@@ -94,7 +98,8 @@ bootstrapFP <- function(y, pik, B, D=1, method, design ){
                         c( 'ppGross', 
                            'ppBooth', 
                            'ppChaoLo85', 
-                           'ppChaoLo94', 
+                           'ppChaoLo94',
+                           'ppBickelFreedman',
                            'ppSitter',
                            'ppHolmberg',
                            'ppChauvet',
@@ -112,7 +117,19 @@ bootstrapFP <- function(y, pik, B, D=1, method, design ){
     
     
     
-    ly <- length(y)
+    
+    
+    
+    
+    # if( identical(method, 'Gross') & !is_whole(N/n)) 
+    #     stop("Gross method can be used only when N/n is an integer. Please, choose another method!")
+    
+    
+    
+    
+    
+    
+    n <- length(y)
     lp <- length(pik)
     
     if( !identical( class(pik), "numeric" ) ){
@@ -127,29 +144,49 @@ bootstrapFP <- function(y, pik, B, D=1, method, design ){
     
     if( !(class(y) %in% c("numeric", "integer")) ){
         stop( "The argument 'y' should be a numeric vector!")
-    }else if( ly < 2 ){
+    }else if( n < 2 ){
         stop( "The 'y' vector is too short!" )
     }else if( any(y %in% c(NA, NaN, Inf)) ){
         stop( "The 'y' vector contains invalid values (NA, NaN, Inf)" )
     }
-    
     
     if( any(y<0) ){
         message( "Some 'y' values are negative, continuing anyway...")
     }
     
     
+    
+    ## pseudo-population, srs
+    if( method %in% c('ppGross',
+                      'ppBooth',
+                      'ppChaoLo85', 
+                      'ppChaoLo94',
+                      'ppBickelFreedman',
+                      'ppSitter') ){
+        if( length(unique(pik)) > 1 ) stop("pik values should be all equal!")
+        N <- (1/pik) * n
+    }
+    
+    ## pseudo-population, ups
+    
+    
+    
+    
+    ### Initialise variables ---
+    n <- length(y)
+    
     ### Bootstrap ---
     
     out <- switch(method, 
-                  'ppGross', 
-                  'ppBooth', 
-                  'ppChaoLo85', 
-                  'ppChaoLo94', 
-                  'ppSitter',
-                  'ppHolmberg',
-                  'ppChauvet',
-                  'ppHotDeck',
+                  'ppGross' = ppBS_srs(y, N, B, D, method = 'Gross'), 
+                  'ppBooth' = ppBS_srs(y, N, B, D, method = 'Booth'), 
+                  'ppChaoLo85' = ppBS_srs(y, N, B, D, method = 'ChaoLo85'), 
+                  'ppChaoLo94' = ppBS_srs(y, N, B, D, method = 'Chaolo94'), 
+                  'ppBickelFreedman' = ppBS_srs(y, N, B, D, method = 'BickelFreedman'), 
+                  'ppSitter' = ppBS_srs(y, N, B, D, method = 'Sitter'),
+                  'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
+                  'ppChauvet' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
+                  'ppHotDeck' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design, x=x, s=s),
                   'dEfron',
                   'dMcCarthySnowden',
                   'dRaoWu',

@@ -7,7 +7,12 @@
 #' @param method a string indicating the bootstrap method to be used, available
 #'     methods are: 'Gross', 'Booth', 'ChaoLo85', 'ChaoLo94', 'BickelFreedman', 'Sitter'
 #'
-#'
+#' @details
+#' See Mashreghi et al. (2016) for details about these bootstrap methods.
+#' 
+#' @references
+#' Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
+#' finite population sampling. Statistics Surveys 10 1-52.
 
 ppBS_srs <- function(y, N, B, D=1, method) {
     
@@ -27,13 +32,12 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     
     ### Initialise quantities ---
     n <- length(y)
-        
+    
     # quantities for the random population, Uc
     if( identical(method, 'Gross') ){
-        k <- floor( N/n ) 
-        select_Uc <- function( ... ){
-            return( NULL )
-        }
+        
+        k <- N/n 
+        select_Uc <- function( ... ) return( NULL )
         
     } else if( identical(method, 'Booth') ){
         
@@ -54,35 +58,29 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     } else if( identical(method, 'ChaoLo85') ){
         
         k <- floor( N/n )
-        
-        G <- function(x){
-            return( (1 - n/x) * x*(n-1) / ((x-1)*n) )
-        }
+        G <- function(x) return( (1 - n/x) * x*(n-1) / ((x-1)*n) )
         q <- (G(N) - G(n*(k+1)) ) / (G(n*k) - G( n*(k+1)) )
+        
         select_Uc <- function(){
             if( q <= runif(1) ){
                 return( NULL )
-            } else{
-                return( y )
-            } 
+            } else return( y )
         }
         
     } else if( identical(method, 'BickelFreedman') ){
         
         k <- floor( N/n )
-        q <- ( 1 - (N-n*k)/n ) * ( 1 - (N-n*k)/(N-1))
+        q <- ( 1 - (N-n*k)/n ) * ( 1 - (N-n*k)/(N-1) )
         select_Uc <- function(){
             if( q <= runif(1) ){
                 return( NULL )
-            } else{
-                return(y)
-            } 
+            } else return(y)
         }
         
     } else if( identical(method, 'Sitter') ){
         
         f  <- n/N
-        
+        k  <- floor( (N/n)*(1 - (1-f)/n) )
         a1 <- ( n*k - n + 1 ) / ( n*(n-1)*(n*k - 1) )
         a2 <- k / ( n * ( n*(k+1) - 1 ) )
         q  <- (1-f)/(n*(n-1)) - a2
@@ -91,24 +89,21 @@ ppBS_srs <- function(y, N, B, D=1, method) {
         select_Uc <- function(){
             if( q <= runif(1) ){
                 return( NULL )
-            } else{
-                return( y )
-            } 
+            } else return( y )
         }
         
     } 
-        
-        
     
+    # finite part of pseudo-population
     Uf  <- rep(ys, each = k )
-
+    
+    ### Bootstrap replicates ---
     Vb <- vector('numeric', length = D)
     for(d in seq_len(D) ){
 
-        
         Uc <- select_Uc()
-        n1 <- ifelse(is.null(Uc) & identical(method, 'Sitter'), n-1, n)
         U  <- c( Uf, Uc)
+        n1 <- ifelse(is.null(Uc) & identical(method, 'Sitter'), n-1, n)
         
         tot <- vector('numeric', length = B)
         ### Bootstrap procedure
@@ -122,7 +117,6 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     
     ### Return results ---
     return( mean(Vb) )
-    
 }
 
 

@@ -17,6 +17,9 @@
 #' @param s logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
 #'     Alternatively, a vector of length n with the indices of the sample units.
 #'     Only required for "ppHotDeck" method.
+#' @param distribution required only for \code{method='generalised'}, a string
+#'     indicating the distribution to use for the Generalised bootstrap. 
+#'     Available options are "uniform", "normal", "exponential" and "lognormal"
 #'        
 #'
 #'
@@ -89,7 +92,7 @@
 
 
 
-bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL ){
+bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribution='uniform' ){
     
     
     ### Check input ---
@@ -116,7 +119,13 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL ){
     )
     
     
-    
+    if( identical(method, 'wGeneralised') ){
+        distribution <- match.arg(distribution, 
+                                  c("uniform", 
+                                    "normal", 
+                                    "exponential", 
+                                    "lognormal"))
+    }
     
     
     
@@ -187,14 +196,14 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL ){
                   'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
                   'ppChauvet' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
                   'ppHotDeck' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design, x=x, s=s),
-                  'dEfron',
-                  'dMcCarthySnowden',
-                  'dRaoWu',
-                  'dSitter',
-                  'dAntalTille_ups',
-                  'wRaoWuYue',
-                  'wChipperfieldPreston',
-                  'wGeneralised'
+                  # 'dEfron',
+                  # 'dMcCarthySnowden',
+                  # 'dRaoWu',
+                  # 'dSitter',
+                  # 'dAntalTille_ups',
+                  # 'wRaoWuYue',
+                  # 'wChipperfieldPreston',
+                  'wGeneralised' = generalised(y, pik, B, distribution = distribution)
     )
     
     ### Return

@@ -36,7 +36,7 @@
 generalised <- function(ys, 
                            pks, 
                            B, 
-                           distribution = c("uniform", "normal", "exponential","lognormal"), 
+                           distribution = c("uniform", "normal", "exponential", "lognormal"), 
                            ...){
     
     distribution <- match.arg(distribution)

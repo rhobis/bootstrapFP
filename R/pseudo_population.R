@@ -42,7 +42,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     } else if( identical(method, 'Booth') ){
         
         k  <- floor( N/n )
-        select_Uc <- function(){
+        select_Uc <- function( ... ){
             s <- as.logical( sampling::srswor( (N-n*k), n) )
             return( y[s] )
         }
@@ -50,7 +50,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     } else if( identical(method, 'ChaoLo94') ){
         
         k <- floor( N/n )
-        select_Uc <- function(){
+        select_Uc <- function( ... ){
             s <- as.logical( sampling::srswr( (N-n*k), n) )
             return( y[s] )
         }
@@ -61,7 +61,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
         G <- function(x) return( (1 - n/x) * x*(n-1) / ((x-1)*n) )
         q <- (G(N) - G(n*(k+1)) ) / (G(n*k) - G( n*(k+1)) )
         
-        select_Uc <- function(){
+        select_Uc <- function( ... ){
             if( q <= runif(1) ){
                 return( NULL )
             } else return( y )
@@ -95,7 +95,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     } 
     
     # finite part of pseudo-population
-    Uf  <- rep(ys, each = k )
+    Uf  <- rep(y, each = k )
     
     ### Bootstrap replicates ---
     Vb <- vector('numeric', length = D)
@@ -126,6 +126,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' Pseudo-population bootstrap for simple random sampling
 #'
 #' @param y vector of sample values
+#' @param pik vector of sample first-order inclusion probabilities
 #' @param x vector of length N with values of the auxiliary variable for all population units,
 #'     only required if method "HotDeck" is chosen
 #' @param s logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
@@ -178,7 +179,7 @@ ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
         smplFUN <- switch(EXPR=design,
                           'brewer' = sampling::UPbrewer,
                           'tille' = sampling::UPtille,
-                          'maxEntropy' = sampling::maxEntropy,
+                          'maxEntropy' = sampling::UPmaxentropy,
                           'randomSystematic' = sampling::UPrandomsystematic,
                           'sampford' = sampling::UPsampford,
                           'poisson' = 
@@ -198,7 +199,7 @@ ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
                "one of the available sampling designs or an object of class function!")
     
     ## Create finite part of pseudo-population
-    n <- length(ys)
+    n <- length(y)
     if( identical(method, 'HotDeck') ){
         U <- vector('numeric', length = length(x) )
         xs <- x[s]

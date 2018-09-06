@@ -9,6 +9,8 @@ ppBS_ups(y, pik, B, D = 1, method, design, x = NULL, s = NULL)
 \arguments{
 \item{y}{vector of sample values}
 
+\item{pik}{vector of sample first-order inclusion probabilities}
+
 \item{B}{scalar, number of bootstrap replications}
 
 \item{D}{scalar, number of replications for the double bootstrap}

@@ -4,7 +4,8 @@
 \alias{bootstrapFP}
 \title{Bootstrap algorithms for Finite Population sampling}
 \usage{
-bootstrapFP(y, pik, B, D = 1, method, design, x = NULL, s = NULL)
+bootstrapFP(y, pik, B, D = 1, method, design, x = NULL, s = NULL,
+  distribution = "uniform")
 }
 \arguments{
 \item{y}{vector of sample values}
@@ -27,6 +28,10 @@ only required if method "ppHotDeck" is chosen}
 \item{s}{logical vector of length N, TRUE for units in the sample, FALSE otherwise. 
 Alternatively, a vector of length n with the indices of the sample units.
 Only required for "ppHotDeck" method.}
+
+\item{distribution}{required only for \code{method='generalised'}, a string
+indicating the distribution to use for the Generalised bootstrap. 
+Available options are "uniform", "normal", "exponential" and "lognormal"}
 }
 \value{
 The bootstrap variance of the Horvitz-Thompson estimator.

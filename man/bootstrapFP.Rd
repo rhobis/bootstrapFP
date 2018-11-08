@@ -85,6 +85,26 @@ For more details on these methods see Mashreghi et al. (2016).
 }
 \examples{
 
+library(bootstrapFP)
+
+### Generate population data ---
+N   <- 20; n <- 5
+x   <- rgamma(500, scale=10, shape=5)
+y   <- abs( 2*x + 3.7*sqrt(x) * rnorm(N) )
+pik <- n * x/sum(x)
+
+### Draw a dummy sample ---
+s  <- sample(c(TRUE, FALSE), N, replace = TRUE, prob = c(.1, .9) )
+n  <- sum(s)
+
+### Estimate bootstrap variance ---
+bootstrapFP(y = y[s], pik = n/N, B=100, method = "ppSitter")
+bootstrapFP(y = y[s], pik = pik[s], B=100, method = "ppHolmberg", design = 'brewer')
+bootstrapFP(y = y[s], pik = pik[s], B=100, D=10, method = "ppChauvet")
+bootstrapFP(y = y[s], pik = pik[s], B=100, method = "wGeneralised", distribution = 'normal')
+
+
+
 
 
 

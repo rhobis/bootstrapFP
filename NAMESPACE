@@ -2,6 +2,7 @@
 
 export(bootstrapFP)
 export(generalised)
+import(sampling)
 importFrom(stats,rmultinom)
 importFrom(stats,rnorm)
 importFrom(stats,runif)

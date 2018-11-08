@@ -74,6 +74,26 @@
 #'
 #' @examples
 #'
+#' library(bootstrapFP)
+#' 
+#' ### Generate population data ---
+#' N   <- 20; n <- 5
+#' x   <- rgamma(500, scale=10, shape=5)
+#' y   <- abs( 2*x + 3.7*sqrt(x) * rnorm(N) )
+#' pik <- n * x/sum(x)
+#' 
+#' ### Draw a dummy sample ---
+#' s  <- sample(c(TRUE, FALSE), N, replace = TRUE, prob = c(.1, .9) )
+#' n  <- sum(s)
+#' 
+#' ### Estimate bootstrap variance ---
+#' bootstrapFP(y = y[s], pik = n/N, B=100, method = "ppSitter")
+#' bootstrapFP(y = y[s], pik = pik[s], B=100, method = "ppHolmberg", design = 'brewer')
+#' bootstrapFP(y = y[s], pik = pik[s], B=100, D=10, method = "ppChauvet")
+#' bootstrapFP(y = y[s], pik = pik[s], B=100, method = "wGeneralised", distribution = 'normal')
+#' 
+#' 
+#' 
 #'
 #'
 #'
@@ -86,7 +106,7 @@
 #' 
 #' @export
 #' 
-# @import sampling 
+#' @import sampling 
 #'
 
 
@@ -143,7 +163,9 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
     
     if( !identical( class(pik), "numeric" ) ){
         stop( "The argument 'pik' should be a numeric vector!")
-    }else if( lp < 2 ){
+    }else if( lp < 2 & !(method %in% c('ppGross', 'ppBooth', 'ppChaoLo85', 
+                                       'ppChaoLo94', 'ppBickelFreedman',
+                                       'ppSitter') )){
         stop( "The 'pik' vector is too short!" )
     }else if( any(pik<0)  | any(pik>1) ){
         stop( "Some 'pik' values are outside the interval [0, 1]")
@@ -194,8 +216,8 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                   'ppBickelFreedman' = ppBS_srs(y, N, B, D, method = 'BickelFreedman'), 
                   'ppSitter' = ppBS_srs(y, N, B, D, method = 'Sitter'),
                   'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
-                  'ppChauvet' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
-                  'ppHotDeck' =  ppBS_ups(y, pik, B, D, method = 'Holmberg', design, x=x, s=s),
+                  'ppChauvet' =  ppBS_ups(y, pik, B, D, method = 'Chauvet', design = 'poisson'),
+                  'ppHotDeck' =  ppBS_ups(y, pik, B, D, method = 'HotDeck', design, x=x, s=s),
                   # 'dEfron',
                   # 'dMcCarthySnowden',
                   # 'dRaoWu',

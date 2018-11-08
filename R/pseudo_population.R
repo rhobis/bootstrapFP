@@ -161,7 +161,8 @@ ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
     ### Check input ---
     method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
     
-    if( !is.function(design) ){
+    
+    if( !is.function(design) & !identical(method, 'Chauvet') ){
         design <- match.arg(design, c('brewer',
                                       'tille',
                                       'maxEntropy',
@@ -170,6 +171,10 @@ ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
                                       'poisson',
                                       'systematic')
         )
+    }else if( identical(method, 'Chauvet') & !identical(design, 'poisson') ){
+        design <- 'poisson'
+        message( paste0("Sampling design set to 'Poisson', if your sample has been drawn with ",
+                        "a different design, please choose a different bootstrap method!") )
     }
     
     

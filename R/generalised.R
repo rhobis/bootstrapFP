@@ -64,9 +64,10 @@ generalised <- function(ys,
     
     HT <- drop( sampling::HTestimator(ys, pks) ) 
     ### Return results ---
-    return( list( Tb = mean(ht), 
-                  Vb = (sum((ht-HT))^2)/B ) #Variance estimation as in Beaumont and Patak(2012)
-    )
+    # return( list( Tb = mean(ht), 
+    #               Vb = (sum((ht-HT))^2)/B ) #Variance estimation as in Beaumont and Patak(2012)
+    return( (sum((ht-HT))^2)/B ) #Variance estimation as in Beaumont and Patak(2012) ) 
+    
 }
 
 

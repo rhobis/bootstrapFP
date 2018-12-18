@@ -1,7 +1,7 @@
 Package: bootstrapFP
 Type: Package
 Title: Bootstrap algorithms for Finite Populations
-Version: 0.1.0
+Version: 0.2.0
 Date: 2018-07-10
 Authors@R: person("Roberto", "Sichera", email = "roberto.sichera@unipa.it", role = c("aut", "cre"))
 Description: Finite Population bootstrap algorithms to estimate the variance

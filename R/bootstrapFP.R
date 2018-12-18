@@ -91,7 +91,10 @@
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "ppHolmberg", design = 'brewer')
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, D=10, method = "ppChauvet")
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
-#' 
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dEfron")
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dMcCarthySnowden")
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
 #' 
 #' 
 #'
@@ -165,7 +168,8 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
         stop( "The argument 'pik' should be a numeric vector!")
     }else if( lp < 2 & !(method %in% c('ppGross', 'ppBooth', 'ppChaoLo85', 
                                        'ppChaoLo94', 'ppBickelFreedman',
-                                       'ppSitter') )){
+                                       'ppSitter', 'dEfron', 'dMcCarthySnowden',
+                                       'dRaoWu', 'dSitter') )){
         stop( "The 'pik' vector is too short!" )
     }else if( any(pik<0)  | any(pik>1) ){
         stop( "Some 'pik' values are outside the interval [0, 1]")
@@ -193,7 +197,11 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                       'ppChaoLo85', 
                       'ppChaoLo94',
                       'ppBickelFreedman',
-                      'ppSitter') ){
+                      'ppSitter',
+                      'dEfron',
+                      'dMcCarthySnowden',
+                      'dRaoWu',
+                      'dSitter') ){
         if( length(unique(pik)) > 1 ) stop("pik values should be all equal!")
         N <- (1/pik) * n
     }
@@ -214,14 +222,14 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                   'ppChaoLo85' = ppBS_srs(y, N, B, D, method = 'ChaoLo85'), 
                   'ppChaoLo94' = ppBS_srs(y, N, B, D, method = 'Chaolo94'), 
                   'ppBickelFreedman' = ppBS_srs(y, N, B, D, method = 'BickelFreedman'), 
-                  'ppSitter' = ppBS_srs(y, N, B, D, method = 'Sitter'),
+                  'ppSitter'   = ppBS_srs(y, N, B, D, method = 'Sitter'),
                   'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
-                  'ppChauvet' =  ppBS_ups(y, pik, B, D, method = 'Chauvet', design = 'poisson'),
-                  'ppHotDeck' =  ppBS_ups(y, pik, B, D, method = 'HotDeck', design, x=x, s=s),
-                  # 'dEfron',
-                  # 'dMcCarthySnowden',
-                  # 'dRaoWu',
-                  # 'dSitter',
+                  'ppChauvet'  =  ppBS_ups(y, pik, B, D, method = 'Chauvet', design = 'poisson'),
+                  'ppHotDeck'  =  ppBS_ups(y, pik, B, D, method = 'HotDeck', design, x=x, s=s),
+                  'dEfron'     = directBS_srs(y, N, B, method = 'Efron'),
+                  'dMcCarthySnowden' = directBS_srs(y, N, B, method = 'McCarthySnowden'),
+                  'dRaoWu'           = directBS_srs(y, N, B, method = 'RaoWu'),
+                  'dSitter'          = directBS_srs(y, N, B, method = 'Sitter'),
                   # 'dAntalTille_ups',
                   # 'wRaoWuYue',
                   # 'wChipperfieldPreston',

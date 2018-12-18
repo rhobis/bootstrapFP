@@ -27,14 +27,13 @@
 #' Argument \code{design} accepts either a string indicating the sampling design
 #' to use to draw samples or a function.
 #' Accepted designs are "brewer", "tille", "maxEntropy", "poisson",
-#' "sampford", "systematic", "randomSystematic", "srs", chao", "sunter", "srs", "fpdust", "fpdust_pps".
+#' "sampford", "systematic", "randomSystematic".
 #' The user may also pass a function as argument; such function should take as input
 #' the parameters passed to argument \code{design_pars} and return either a logical
 #' vector or a vector of 0 and 1,  where \code{TRUE} or \code{1} indicate sampled
 #' units and \code{FALSE} or \code{0} indicate non-sample units.
 #' The length of such vector must be equal to the length of \code{x}
 #' if \code{units} is not specified, otherwise it must have the same length of \code{units}.
-#'
 #'
 #' \code{method} must be a string indicating the bootstrap method to use.
 #' A list of the currently available methods follows, the sampling design they
@@ -59,7 +58,7 @@
 #'     \item "dMcCarthySnowden" [SRSWOR]
 #'     \item "dRaoWu" [SRSWOR]
 #'     \item "dSitter" [SRSWOR]
-#'     \item "dAntalTille_ups" [UPSWOR]
+#'     \item "dAntalTille_UPS" [UPSWOR]
 #'     
 #'     \item "wRaoWuYue"    [SRSWOR]
 #'     \item "wChipperfieldPreston"    [SRSWOR]
@@ -133,7 +132,7 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                            'dMcCarthySnowden',
                            'dRaoWu',
                            'dSitter',
-                           'dAntalTille_ups',
+                           'dAntalTille_UPS',
                            'wRaoWuYue',
                            'wChipperfieldPreston',
                            'wGeneralised'
@@ -141,6 +140,58 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
     )
     
     
+    # Sampling design (only for bootstrap methods for UPS designs)
+    if( method %in% c("ppHolmberg", "ppChauvet", "ppHotDeck", "dAntalTille_UPS")){
+        
+        if( missing(design) ){
+            if( identical(method, 'ppChauvet') ){
+                design <- 'poisson'
+            }
+        }
+        if( is.character(design) ){
+            
+            if( !identical(method, 'ppChauvet')){
+                design <- match.arg(design, c('brewer',
+                                              'tille',
+                                              'maxEntropy',
+                                              'randomSystematic',
+                                              'sampford',
+                                              'poisson',
+                                              'systematic')
+                )
+            }else if( identical(method, 'ppChauvet') & !identical(design, 'poisson') ){
+                design <- 'poisson'
+                message( paste0("Sampling design set to 'Poisson', if your sample has been drawn with ",
+                                "a different design, please choose a different bootstrap method!") )
+            }
+            
+            # if( is.character(design)){
+            # sampling function
+            smplFUN <- switch(EXPR=design,
+                              'brewer'           = sampling::UPbrewer,
+                              'tille'            = sampling::UPtille,
+                              'maxEntropy'       = sampling::UPmaxentropy,
+                              'randomSystematic' = sampling::UPrandomsystematic,
+                              'sampford'         = sampling::UPsampford,
+                              'systematic'       = sampling::UPsystematic,
+                              'poisson'          =
+                                  function(pik){
+                                      ss <- 0
+                                      while(ss < 2){
+                                          s  <- sampling::UPpoisson( pik )
+                                          ss <- sum(s)
+                                      }
+                                      return( s )
+                                  }
+            )
+        }else if( is.function(design) ){
+            smplFUN <- design
+        }else stop("Argument design is not well-specified: it should be either a string representing ",
+                   "one of the available sampling designs or an object of class function!")
+    }   
+    
+    
+    # Distribution (only for the generalised bootstrap)
     if( identical(method, 'wGeneralised') ){
         distribution <- match.arg(distribution, 
                                   c("uniform", 
@@ -148,7 +199,7 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                                     "exponential", 
                                     "lognormal"))
     }
-
+    
     
     
     n <- length(y)
@@ -216,9 +267,9 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                   'ppChaoLo94' = ppBS_srs(y, N, B, D, method = 'Chaolo94'), 
                   'ppBickelFreedman' = ppBS_srs(y, N, B, D, method = 'BickelFreedman'), 
                   'ppSitter'   = ppBS_srs(y, N, B, D, method = 'Sitter'),
-                  'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', design),
-                  'ppChauvet'  =  ppBS_ups(y, pik, B, D, method = 'Chauvet', design = 'poisson'),
-                  'ppHotDeck'  =  ppBS_ups(y, pik, B, D, method = 'HotDeck', design, x=x, s=s),
+                  'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', smplFUN),
+                  'ppChauvet'  = ppBS_ups(y, pik, B, D, method = 'Chauvet', smplFUN),
+                  'ppHotDeck'  = ppBS_ups(y, pik, B, D, method = 'HotDeck', smplFUN, x=x, s=s),
                   'dEfron'     = directBS_srs(y, N, B, method = 'Efron'),
                   'dMcCarthySnowden' = directBS_srs(y, N, B, method = 'McCarthySnowden'),
                   'dRaoWu'           = directBS_srs(y, N, B, method = 'RaoWu'),

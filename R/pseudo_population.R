@@ -84,18 +84,9 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' @param D scalar, number of replications for the double bootstrap
 #' @param method a string indicating the bootstrap method to be used, available
 #'     methods are: 'Gross', 'Booth', 'ChaoLo85', 'ChaoLo94', 'BickelFreedman', 'Sitter'
-#' @param design sampling procedure to be used for sample selection.
-#'        Either a string indicating the name of the sampling design or a function;
-#'        see section "Details" for more information.
-#'
-#' @details
-#' Argument \code{design} accepts either a string indicating the sampling design
-#' to use to draw samples or a function.
-#' Accepted designs are "brewer", "tille", "maxEntropy", "poisson",
-#' "sampford", "systematic", "randomSystematic".
-#' The user may also pass a function as argument; such function should take as input
-#' a vector of length N of inclusion probabilities and return a vector of length N,
-#' either logical or a vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
+#' @param smplFUN a function that takes as input a vector of length N of 
+#' inclusion probabilities and return a vector of length N, either logical or a 
+#' vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
 #' units and \code{FALSE} or \code{0} indicate non-sample units.
 #' 
 #' 
@@ -104,53 +95,13 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' finite population sampling. Statistics Surveys 10 1-52.
 #' 
 
-ppBS_ups <- function(y, pik, B, D=1, method, design, x = NULL, s = NULL) {
+ppBS_ups <- function(y, pik, B, D=1, method, smplFUN, x = NULL, s = NULL) {
     
     ### Check input ---
-    method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
-    
-    
-    if( !is.function(design) & !identical(method, 'Chauvet') ){
-        design <- match.arg(design, c('brewer',
-                                      'tille',
-                                      'maxEntropy',
-                                      'randomSystematic',
-                                      'sampford',
-                                      'poisson',
-                                      'systematic')
-        )
-    }else if( identical(method, 'Chauvet') & !identical(design, 'poisson') ){
-        design <- 'poisson'
-        message( paste0("Sampling design set to 'Poisson', if your sample has been drawn with ",
-                        "a different design, please choose a different bootstrap method!") )
-    }
+    # method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
     
     
     ### Initialisation ---
-    if( is.character(design)){
-        # sampling function
-        smplFUN <- switch(EXPR=design,
-                          'brewer' = sampling::UPbrewer,
-                          'tille' = sampling::UPtille,
-                          'maxEntropy' = sampling::UPmaxentropy,
-                          'randomSystematic' = sampling::UPrandomsystematic,
-                          'sampford' = sampling::UPsampford,
-                          'poisson' = 
-                              function(pik){
-                                  ss <- 0
-                                  while(ss < 2){
-                                      s  <- sampling::UPpoisson( pik )
-                                      ss <- sum(s)
-                                  }
-                                  return( s )
-                              },
-                          'systematic' = sampling::UPsystematic
-        )
-    }else if( is.function(design) ){
-        smplFUN <- design
-    }else stop("Argument design is not well-specified: it should be either a string representing ",
-               "one of the available sampling designs or an object of class function!")
-    
     ## Create finite part of pseudo-population
     n <- length(y)
     if( identical(method, 'HotDeck') ){

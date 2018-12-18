@@ -182,6 +182,8 @@ decompose_phi <- function(phi) {
 #' present in the sample
 #' 
 #' 
+#' 
+#' @importFrom stats rmultinom
 
 one_one <- function(n, method = c("doubled-half", "over-replacement") ){
     method <- match.arg(method)

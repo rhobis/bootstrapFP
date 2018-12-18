@@ -1,7 +1,7 @@
 #' Generalised Bootstrap 
 #'
 #' Compute bootstrap estimates according to Generalised Bootstrap procedure by
-#' Beaumont and Patak ()
+#' Beaumont and Patak (2012)
 #'
 #'@param ys values of the variable of interest for the original sample
 #'@param pks inclusion probabilities for units in the sample
@@ -24,9 +24,9 @@
 #'International Statistical Review, 80(1), 127-148.
 #'
 #'
-#' @importFrom stats rmultinom rnorm runif var
+#' @importFrom stats rnorm runif
 #' 
-#' @export
+
 
 
 
@@ -42,7 +42,7 @@ generalised <- function(ys,
     ### Initialize variables ---
     n  <- length(ys)
     ht <- vector('numeric', length=B)
-    
+    w  <- 1/pks #original weights    
     
     ### Bootstrap procedure ---
     for(b in seq_len(B)){
@@ -57,7 +57,6 @@ generalised <- function(ys,
                                   a <- exp( rnorm(n, -0.5*q, q) )
                                }
         )
-        w  <- 1/pks #original weights
         ws   <- a*w
         ht[b] <- sum(ys*ws)
     }

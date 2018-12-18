@@ -9,7 +9,7 @@ directBS_srs(y, N, B, method)
 \arguments{
 \item{y}{vector of sample values}
 
-\item{N}{scalar, represents the population size}
+\item{N}{scalar, representing the population size}
 
 \item{B}{scalar, number of bootstrap replications}
 

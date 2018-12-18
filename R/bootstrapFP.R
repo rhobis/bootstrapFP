@@ -92,7 +92,8 @@
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
-#' 
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wRaoWuYue") 
+#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wChipperfieldPreston")
 #' 
 #'
 #'
@@ -104,10 +105,11 @@
 #' 
 #' 
 #' 
-#' @export
-#' 
+#' @importFrom stats var
 #' @import sampling 
 #'
+#'
+#' @export
 
 
 
@@ -146,16 +148,7 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                                     "exponential", 
                                     "lognormal"))
     }
-    
-    
-    
-    
-    # if( identical(method, 'Gross') & !is_whole(N/n)) 
-    #     stop("Gross method can be used only when N/n is an integer. Please, choose another method!")
-    
-    
-    
-    
+
     
     
     n <- length(y)
@@ -166,7 +159,8 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
     }else if( lp < 2 & !(method %in% c('ppGross', 'ppBooth', 'ppChaoLo85', 
                                        'ppChaoLo94', 'ppBickelFreedman',
                                        'ppSitter', 'dEfron', 'dMcCarthySnowden',
-                                       'dRaoWu', 'dSitter') )){
+                                       'dRaoWu', 'dSitter', 
+                                       'wRaoWuYue', 'wChipperfieldPreston') )){
         stop( "The 'pik' vector is too short!" )
     }else if( any(pik<0)  | any(pik>1) ){
         stop( "Some 'pik' values are outside the interval [0, 1]")
@@ -198,7 +192,9 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                       'dEfron',
                       'dMcCarthySnowden',
                       'dRaoWu',
-                      'dSitter') ){
+                      'dSitter',
+                      'wRaoWuYue',
+                      'wChipperfieldPreston') ){
         if( length(unique(pik)) > 1 ) stop("pik values should be all equal!")
         N <- (1/pik) * n
     }
@@ -228,8 +224,8 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                   'dRaoWu'           = directBS_srs(y, N, B, method = 'RaoWu'),
                   'dSitter'          = directBS_srs(y, N, B, method = 'Sitter'),
                   # 'dAntalTille_ups',
-                  # 'wRaoWuYue',
-                  # 'wChipperfieldPreston',
+                  'wRaoWuYue'             = bootstrap_weights(y, N, B, method = 'RaoWuYue'),
+                  'wChipperfieldPreston'  = bootstrap_weights(y, N, B, method = 'ChipperfieldPreston'),
                   'wGeneralised' = generalised(y, pik, B, distribution = distribution)
     )
     

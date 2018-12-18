@@ -1,7 +1,7 @@
 #' Direct bootstrap methods for simple random sampling
 #'
 #' @param y vector of sample values
-#' @param N scalar, represents the population size
+#' @param N scalar, representing the population size
 #' @param B scalar, number of bootstrap replications
 #' @param method a string indicating the bootstrap method to be used, available
 #'     methods are: 'Efron', 'McCarthySnowden', 'RaoWu', 'Sitter'.

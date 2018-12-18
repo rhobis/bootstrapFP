@@ -25,7 +25,7 @@ a vector of K variance estimates.
 }
 \description{
 Compute bootstrap estimates according to Generalised Bootstrap procedure by
-Beaumont and Patak ()
+Beaumont and Patak (2012)
 }
 \references{
 Bertail, P., & Combris, P. (1997). Bootstrap généralisé d'un sondage. 

@@ -181,7 +181,6 @@ decompose_phi <- function(phi) {
 #' @return an integer vector of size \code{n}, indicating how many times each unit is
 #' present in the sample
 #' 
-#' @references 
 #' 
 
 one_one <- function(n, method = c("doubled-half", "over-replacement") ){

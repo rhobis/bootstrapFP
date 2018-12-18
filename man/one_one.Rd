@@ -30,6 +30,3 @@ the second one (Antal and Till?, 2014) is the doubled half sampling, which is
 simpler and quickier to compute, it can be called by setting
 \code{method = "doubled-half"} and is the default option.
 }
-\references{
-
-}

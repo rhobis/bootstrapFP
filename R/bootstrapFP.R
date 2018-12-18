@@ -90,8 +90,6 @@
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "ppHolmberg", design = 'brewer')
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, D=10, method = "ppChauvet")
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
-#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dEfron")
-#' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dMcCarthySnowden")
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
 #' 

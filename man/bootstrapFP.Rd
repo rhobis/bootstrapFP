@@ -94,8 +94,7 @@ y   <- abs( 2*x + 3.7*sqrt(x) * rnorm(N) )
 pik <- n * x/sum(x)
 
 ### Draw a dummy sample ---
-s  <- sample(c(TRUE, FALSE), N, replace = TRUE, prob = c(.1, .9) )
-n  <- sum(s)
+s  <- sample(N, n)
 
 ### Estimate bootstrap variance ---
 bootstrapFP(y = y[s], pik = n/N, B=100, method = "ppSitter")

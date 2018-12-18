@@ -3,6 +3,7 @@
 export(bootstrapFP)
 export(generalised)
 import(sampling)
+importFrom(stats,rbinom)
 importFrom(stats,rmultinom)
 importFrom(stats,rnorm)
 importFrom(stats,runif)

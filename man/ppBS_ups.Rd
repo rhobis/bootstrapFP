@@ -4,7 +4,7 @@
 \alias{ppBS_ups}
 \title{Pseudo-population bootstrap for simple random sampling}
 \usage{
-ppBS_ups(y, pik, B, D = 1, method, design, x = NULL, s = NULL)
+ppBS_ups(y, pik, B, D = 1, method, smplFUN, x = NULL, s = NULL)
 }
 \arguments{
 \item{y}{vector of sample values}
@@ -18,9 +18,10 @@ ppBS_ups(y, pik, B, D = 1, method, design, x = NULL, s = NULL)
 \item{method}{a string indicating the bootstrap method to be used, available
 methods are: 'Gross', 'Booth', 'ChaoLo85', 'ChaoLo94', 'BickelFreedman', 'Sitter'}
 
-\item{design}{sampling procedure to be used for sample selection.
-Either a string indicating the name of the sampling design or a function;
-see section "Details" for more information.}
+\item{smplFUN}{a function that takes as input a vector of length N of 
+inclusion probabilities and return a vector of length N, either logical or a 
+vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
+units and \code{FALSE} or \code{0} indicate non-sample units.}
 
 \item{x}{vector of length N with values of the auxiliary variable for all population units,
 only required if method "HotDeck" is chosen}
@@ -31,16 +32,6 @@ Only required for "HotDeck" method.}
 }
 \description{
 Pseudo-population bootstrap for simple random sampling
-}
-\details{
-Argument \code{design} accepts either a string indicating the sampling design
-to use to draw samples or a function.
-Accepted designs are "brewer", "tille", "maxEntropy", "poisson",
-"sampford", "systematic", "randomSystematic".
-The user may also pass a function as argument; such function should take as input
-a vector of length N of inclusion probabilities and return a vector of length N,
-either logical or a vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
-units and \code{FALSE} or \code{0} indicate non-sample units.
 }
 \references{
 Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 

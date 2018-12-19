@@ -2,7 +2,7 @@
 % Please edit documentation in R/weights.R
 \name{bootstrap_weights}
 \alias{bootstrap_weights}
-\title{Bootstrap with adjusted weights}
+\title{Bootstrap with Adjusted Weights}
 \usage{
 bootstrap_weights(ys, N, B, method = c("RaoWuYue",
   "ChipperfieldPreston"))

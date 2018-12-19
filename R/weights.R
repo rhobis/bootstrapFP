@@ -1,4 +1,4 @@
-#' Bootstrap with adjusted weights 
+#' Bootstrap with Adjusted Weights 
 #'
 #' Compute bootstrap estimates according to Bootstrap Weights procedures by
 #' Rao et Al. (1992) and Chipperfield and Preston (2007).

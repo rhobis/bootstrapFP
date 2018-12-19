@@ -1,40 +1,38 @@
-### Antal and Till? bootstrap for pps sampling ---------------------------------
-
-#' Antal and Till? (2011) bootstrap for unequal probability sampling
+#' Antal and Tillé (2011) Bootstrap for Unequal Probability Sampling
 #' 
-#' Draw B bootstrap resamples according to Antal and Till? (2011) direct
-#' bootstap method for unequal probability sampling.
+#' Draw B bootstrap samples according to Antal and Tillé (2011) direct
+#' bootstap method for Unequal Probability Sampling.
 #' Note that this method do not need a double bootstrap.
 #'
-#'@param ys values of the variable of interest for the original sample
-#'@param pks vector of first-order inclusion probabilities for sampled units
-#'@param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
-#'@param smplFUN function used to select the sample according to the
-#'original sampling design. The function must accept the vector of inclusion
-#'probabilities as input and return a vector o 0's and 1's (as the functions of
-#'the library sampling).
-#'@param approx_method method used to approximate Dkk with function \code{Dkk_aprox()}
-#'@param ... added to ignore useless arguments
+#' @param ys values of the variable of interest for the original sample
+#' @param pks vector of first-order inclusion probabilities for sampled units
+#' @param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
+#' @param smplFUN a function that takes as input a vector of length N of 
+#' inclusion probabilities and return a vector of length N, either logical or a 
+#' vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
+#' units and \code{FALSE} or \code{0} indicate non-sample units.
+#' @param approx_method method used to approximate Dkk with function \code{Dkk_aprox()}
+#' @param ... added to ignore useless arguments
 #'
-#'@return a list of two elements, a vector of K average bootstrap totals and
-#'a vector of K variance estimates.
+#' @return a list of two elements, a vector of K average bootstrap totals and
+#' a vector of K variance estimates.
 #' 
 #' 
 #' @references 
 #' 
-#' Antal, E.; Till?, Y., 2011. A Direct Bootstrap Method for Complex Sampling
+#' Antal, E.; Tillé, Y., 2011. A Direct Bootstrap Method for Complex Sampling
 #' Designs From a Finite Population. Journal of the American Statistical Association, 106:494, 534-543,
 #' doi: 10.1198/jasa.2011.tm09767
 #' 
-#' Antal, E.; Till?, Y., 2014. A new resampling method for sampling designs without
+#' Antal, E.; Tillé, Y., 2014. A new resampling method for sampling designs without
 #' replacement: the doubled half bootstrap. Computational Statistics, 29(5), 1345-1363.
 #' doi: 10.10007/s00180-014-0495-0
 
 
 
-bs_antal_tille <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "DevilleTille"), ...) {
+AntalTille_ups <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "DevilleTille"), ...) {
     
-    ### Initial values ---
+    ### Initialisation ---
     approx_method <- match.arg(approx_method)
     n    <- length(ys)
     Dkk  <- Dkk_approx(pks, n, method=approx_method)
@@ -46,11 +44,10 @@ bs_antal_tille <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "Devi
     
     if(case >= 2){
         ### CASE 1 (algorithm 4) -----------------------------------------------
-        
-        
+  
         n1_int <- as.integer(n1)
         if( n1 != n1_int ){
-            q <- n1_int - n1 + 1
+            q    <- n1_int - n1 + 1
             phi1 <- decompose_phi(phi)
             rand_ind <- sample( x=1:2, size=1, prob=c(q, 1-q) )
             m <- phi1[[ rand_ind ]][[2]]
@@ -93,9 +90,7 @@ bs_antal_tille <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "Devi
     }
     
     ### Return results ---
-    return( list( Tb = mean(ht),
-                  Vb = var(ht) )
-    )
+    return( var(ht) )
     
 }
 
@@ -110,13 +105,15 @@ bs_antal_tille <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "Devi
 #' @param method a string indicating which approximation method is to be used
 #' 
 #' @return a numeric vector with approximated Dkk
+#' 
+#' @keywords internal
 
 Dkk_approx <- function(pks, n, method=c("Hajek", "DevilleTille")) {
     
     method <- match.arg(method)
     
     if(method == "Hajek"){
-        ck <- (n/(n-1)) * (1-pks) 
+        ck  <- (n/(n-1)) * (1-pks) 
         Dkk <- ck - (ck*ck / sum(ck))
     } else if(method == "DevilleTille" ){
         if(n>2){
@@ -140,6 +137,9 @@ Dkk_approx <- function(pks, n, method=c("Hajek", "DevilleTille")) {
 #' given by 1 - D_kk
 #' 
 #' @return a list with the two vectors in which \code{phi} is decomposed
+#' 
+#' 
+#' @keywords internal
 
 decompose_phi <- function(phi) {
     ### Initial values ---
@@ -184,6 +184,9 @@ decompose_phi <- function(phi) {
 #' 
 #' 
 #' @importFrom stats rmultinom
+#' 
+#' 
+#' @keywords internal
 
 one_one <- function(n, method = c("doubled-half", "over-replacement") ){
     method <- match.arg(method)
@@ -221,6 +224,8 @@ one_one <- function(n, method = c("doubled-half", "over-replacement") ){
 #' 
 #' @return an integer vector of size \code{n}, indicating how many times each unit is
 #' present in the sample
+#' 
+#' @keywords internal
 
 
 doubled_half <- function( n ){
@@ -259,8 +264,11 @@ doubled_half <- function( n ){
 #' present in the sample
 #' 
 #' @references 
-#' Antal, E.; & Till?, Y. (2011). Simple random sampling with over-replacement. 
+#' Antal, E.; Tillé, Y. (2011). Simple random sampling with over-replacement. 
 #' Journal of Statistical Planning and Inference, 141(1), 597-601.
+#' 
+#' 
+#' @keywords internal
 
 over_replacement <- function( N, n ){
     if (N<2 | n<2) stop("Population and sample size must be > 1")

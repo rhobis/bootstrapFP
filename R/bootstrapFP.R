@@ -91,6 +91,7 @@
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
+#' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "dAntalTille_UPS", design='brewer')
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wRaoWuYue") 
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wChipperfieldPreston")
 #' 
@@ -274,7 +275,7 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                   'dMcCarthySnowden' = directBS_srs(y, N, B, method = 'McCarthySnowden'),
                   'dRaoWu'           = directBS_srs(y, N, B, method = 'RaoWu'),
                   'dSitter'          = directBS_srs(y, N, B, method = 'Sitter'),
-                  # 'dAntalTille_ups',
+                  'dAntalTille_UPS'  = AntalTille_ups(y, pik, B, smplFUN, approx_method = 'Hajek'),
                   'wRaoWuYue'             = bootstrap_weights(y, N, B, method = 'RaoWuYue'),
                   'wChipperfieldPreston'  = bootstrap_weights(y, N, B, method = 'ChipperfieldPreston'),
                   'wGeneralised' = generalised(y, pik, B, distribution = distribution)

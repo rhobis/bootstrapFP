@@ -43,14 +43,13 @@ Bootstrap variance estimation for finite population sampling.
 Argument \code{design} accepts either a string indicating the sampling design
 to use to draw samples or a function.
 Accepted designs are "brewer", "tille", "maxEntropy", "poisson",
-"sampford", "systematic", "randomSystematic", "srs", chao", "sunter", "srs", "fpdust", "fpdust_pps".
+"sampford", "systematic", "randomSystematic".
 The user may also pass a function as argument; such function should take as input
 the parameters passed to argument \code{design_pars} and return either a logical
 vector or a vector of 0 and 1,  where \code{TRUE} or \code{1} indicate sampled
 units and \code{FALSE} or \code{0} indicate non-sample units.
 The length of such vector must be equal to the length of \code{x}
 if \code{units} is not specified, otherwise it must have the same length of \code{units}.
-
 
 \code{method} must be a string indicating the bootstrap method to use.
 A list of the currently available methods follows, the sampling design they
@@ -75,7 +74,7 @@ For more details on these methods see Mashreghi et al. (2016).
     \item "dMcCarthySnowden" [SRSWOR]
     \item "dRaoWu" [SRSWOR]
     \item "dSitter" [SRSWOR]
-    \item "dAntalTille_ups" [UPSWOR]
+    \item "dAntalTille_UPS" [UPSWOR]
     
     \item "wRaoWuYue"    [SRSWOR]
     \item "wChipperfieldPreston"    [SRSWOR]
@@ -103,6 +102,7 @@ bootstrapFP(y = y[s], pik = pik[s], B=10, D=10, method = "ppChauvet")
 bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
 bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
+bootstrapFP(y = y[s], pik = pik[s], B=10, method = "dAntalTille_UPS", design='brewer')
 bootstrapFP(y = y[s], pik = n/N, B=10, method = "wRaoWuYue") 
 bootstrapFP(y = y[s], pik = n/N, B=10, method = "wChipperfieldPreston")
 

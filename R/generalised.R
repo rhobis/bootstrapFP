@@ -8,7 +8,6 @@
 #'@param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
 #'@param distribution the distribution from which to generate the weights 
 #'adjustments. One of \code{uniform}, \code{normal} or \code{lognormal}.
-#'@param ... added to ignore useless arguments
 #'
 #'@return a list of two elements, a vector of K average bootstrap totals and
 #'a vector of K variance estimates.
@@ -34,8 +33,8 @@
 generalised <- function(ys, 
                            pks, 
                            B, 
-                           distribution = c("uniform", "normal", "exponential", "lognormal"), 
-                           ...){
+                           distribution = c("uniform", "normal", "exponential", "lognormal") 
+                        ){
     
     distribution <- match.arg(distribution)
     

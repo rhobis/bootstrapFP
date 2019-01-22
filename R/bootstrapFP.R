@@ -77,7 +77,7 @@
 #' 
 #' ### Generate population data ---
 #' N   <- 20; n <- 5
-#' x   <- rgamma(500, scale=10, shape=5)
+#' x   <- rgamma(N, scale=10, shape=5)
 #' y   <- abs( 2*x + 3.7*sqrt(x) * rnorm(N) )
 #' pik <- n * x/sum(x)
 #' 
@@ -88,13 +88,12 @@
 #' bootstrapFP(y = y[s], pik = n/N, B=100, method = "ppSitter")
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "ppHolmberg", design = 'brewer')
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, D=10, method = "ppChauvet")
-#' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dRaoWu")
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "dSitter")
 #' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "dAntalTille_UPS", design='brewer')
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wRaoWuYue") 
 #' bootstrapFP(y = y[s], pik = n/N, B=10, method = "wChipperfieldPreston")
-#' 
+#' bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 #'
 #'
 #'
@@ -118,7 +117,6 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
     
     
     ### Check input ---
-    
     method <- match.arg(method, 
                         c( 'ppGross', 
                            'ppBooth', 
@@ -191,7 +189,7 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
                    "one of the available sampling designs or an object of class function!")
     }   
     
-    
+
     # Distribution (only for the generalised bootstrap)
     if( identical(method, 'wGeneralised') ){
         distribution <- match.arg(distribution, 
@@ -233,6 +231,17 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
     }
     
     
+    # x and s, only for HotDeck bootstrap
+    if( identical(method, 'ppHotDeck') ){
+        if(missing(x) | missing(s)) stop("Arguments 'x' and 's' are required for HotDeck bootstrap procedure.")
+        if(!identical(length(s), length(x))) stop("Arguments 's' and 'x' should have same length.")
+        if(length(s) < n) stop("Arguments 'x' and 's' should have length N>n")
+        if(!is.numeric(x)) stop("Argument 'x' should be a numeric vector.")
+        if(!is.logical(s)) stop("Argument 's' should be a logical vector.")
+        if(sum(s) != n) stop("The number of TRUE values in the 's' argument is not equal to the sample size.")
+    }
+    
+    
     
     ## pseudo-population, srs
     if( method %in% c('ppGross',
@@ -251,33 +260,28 @@ bootstrapFP <- function(y, pik, B, D=1, method, design, x=NULL, s=NULL, distribu
         N <- (1/pik) * n
     }
     
-    ## pseudo-population, ups
-    
-    
-    
     
     ### Initialise variables ---
     n <- length(y)
     
     ### Bootstrap ---
-    
     out <- switch(method, 
                   'ppGross' = ppBS_srs(y, N, B, D, method = 'Gross'), 
                   'ppBooth' = ppBS_srs(y, N, B, D, method = 'Booth'), 
-                  'ppChaoLo85' = ppBS_srs(y, N, B, D, method = 'ChaoLo85'), 
-                  'ppChaoLo94' = ppBS_srs(y, N, B, D, method = 'Chaolo94'), 
+                  'ppChaoLo85'= ppBS_srs(y, N, B, D, method = 'ChaoLo85'), 
+                  'ppChaoLo94'= ppBS_srs(y, N, B, D, method = 'ChaoLo94'), 
                   'ppBickelFreedman' = ppBS_srs(y, N, B, D, method = 'BickelFreedman'), 
-                  'ppSitter'   = ppBS_srs(y, N, B, D, method = 'Sitter'),
-                  'ppHolmberg' = ppBS_ups(y, pik, B, D, method = 'Holmberg', smplFUN),
-                  'ppChauvet'  = ppBS_ups(y, pik, B, D, method = 'Chauvet', smplFUN),
-                  'ppHotDeck'  = ppBS_ups(y, pik, B, D, method = 'HotDeck', smplFUN, x=x, s=s),
-                  'dEfron'     = directBS_srs(y, N, B, method = 'Efron'),
-                  'dMcCarthySnowden' = directBS_srs(y, N, B, method = 'McCarthySnowden'),
-                  'dRaoWu'           = directBS_srs(y, N, B, method = 'RaoWu'),
-                  'dSitter'          = directBS_srs(y, N, B, method = 'Sitter'),
-                  'dAntalTille_UPS'  = AntalTille_ups(y, pik, B, smplFUN, approx_method = 'Hajek'),
-                  'wRaoWuYue'             = bootstrap_weights(y, N, B, method = 'RaoWuYue'),
-                  'wChipperfieldPreston'  = bootstrap_weights(y, N, B, method = 'ChipperfieldPreston'),
+                  'ppSitter'  = ppBS_srs(y, N, B, D, method = 'Sitter'),
+                  'ppHolmberg'= ppBS_ups(y, pik, B, D, method = 'Holmberg', smplFUN),
+                  'ppChauvet' = ppBS_ups(y, pik, B, D, method = 'Chauvet', smplFUN),
+                  'ppHotDeck' = ppBS_ups(y, pik, B, D, method = 'HotDeck', smplFUN, x=x, s=s),
+                  'dEfron'    = directBS_srs(y, N, B, method = 'Efron'),
+                  'dMcCarthySnowden'= directBS_srs(y, N, B, method = 'McCarthySnowden'),
+                  'dRaoWu'          = directBS_srs(y, N, B, method = 'RaoWu'),
+                  'dSitter'         = directBS_srs(y, N, B, method = 'Sitter'),
+                  'dAntalTille_UPS' = AntalTille2011_ups(y, pik, B, smplFUN, approx_method = 'Hajek'),
+                  'wRaoWuYue'            = bootstrap_weights(y, N, B, method = 'RaoWuYue'),
+                  'wChipperfieldPreston' = bootstrap_weights(y, N, B, method = 'ChipperfieldPreston'),
                   'wGeneralised' = generalised(y, pik, B, distribution = distribution)
     )
     

@@ -49,6 +49,7 @@ directBS_srs <- function(y, N, B, method){
         
         ff <- nn/n
         k  <- n*(1-ff)/(nn*(1-f)) 
+        if( is_wholenumber(k)) k <- round(k)
         kf <- floor(k)
         kc <- kf + 1
         q  <- (1/kf - 1/k) / (1/kf - 1/kc)

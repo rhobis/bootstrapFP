@@ -38,7 +38,7 @@ bootstrapFP(y = y[s], pik = n/N, B=B, method = "ppBi")
 
 
 ### Sitter (pseudo-population)
-bootstrapFP(y = y[s], pik = n/N, B=B, method = "ppSitter")  ### VALUE TOO LOW?
+bootstrapFP(y = y[s], pik = n/N, B=B, method = "ppSitter") 
 
 
 
@@ -61,12 +61,12 @@ bootstrapFP(y = y[s], pik = pik[s], B=B, D=D, method = "ppChauvet")
 
 ### HotDeck
 bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'brewer', x=x, s=(1:N %in% s))
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'randomSystematic')
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'tille')
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'sampford')
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'maxEntropy')
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'poisson')
-bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'systematic')
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'randomSystematic', x=x, s=(1:N %in% s))
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'tille', x=x, s=(1:N %in% s))
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'sampford', x=x, s=(1:N %in% s))
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'maxEntropy', x=x, s=(1:N %in% s))
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'poisson', x=x, s=(1:N %in% s))
+bootstrapFP(y = y[s], pik = pik[s], B=B, method = "ppHotDeck", design = 'systematic', x=x, s=(1:N %in% s))
 
 
 ### Efron

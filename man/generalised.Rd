@@ -5,7 +5,7 @@
 \title{Generalised Bootstrap}
 \usage{
 generalised(ys, pks, B, distribution = c("uniform", "normal",
-  "exponential", "lognormal"), ...)
+  "exponential", "lognormal"))
 }
 \arguments{
 \item{ys}{values of the variable of interest for the original sample}
@@ -16,8 +16,6 @@ generalised(ys, pks, B, distribution = c("uniform", "normal",
 
 \item{distribution}{the distribution from which to generate the weights 
 adjustments. One of \code{uniform}, \code{normal} or \code{lognormal}.}
-
-\item{...}{added to ignore useless arguments}
 }
 \value{
 a list of two elements, a vector of K average bootstrap totals and

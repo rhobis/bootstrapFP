@@ -9,8 +9,8 @@ one_one(n, method = c("doubled-half", "over-replacement"))
 \arguments{
 \item{n}{integer, the sample size}
 
-\item{method}{algorithm to be used, currently, only the doubled half sampling
-is implemented (Antal and Till?, 2014). See Details section.}
+\item{method}{algorithm to be used, either doubled half sampling or srs with over-replacement. 
+See the Details section.}
 }
 \value{
 an integer vector of size \code{n}, indicating how many times each unit is
@@ -18,16 +18,16 @@ present in the sample
 }
 \description{
 A one-one sampling is a design for which the random variables Sk, representing
-the number of times unit k is present in the sample, have expectation and
-variance equal to 1. Proposed by Antal and Till? (2011, 2014).
+the number of times unit k is included in the sample, have expectation and
+variance equal to 1. Proposed by Antal and Tille' (2011, 2014).
 }
 \details{
-Antal and Till? proposed two procedures that lead to one-one samplings.
-The first one (Antal and Till?, 2011a) in more complex and makes use of a simple 
-random Sampling with over-replacement (Antal and Till?, 2011b), 
-and it is called by setting \code{method = "over-replacement"};
-the second one (Antal and Till?, 2014) is the doubled half sampling, which is 
-simpler and quickier to compute, it can be called by setting
-\code{method = "doubled-half"} and is the default option.
+Antal and Tillé proposed two procedures that lead to one-one samplings.
+The first one (Antal and Tillé, 2011a) in more complex and makes use of a simple 
+random Sampling with over-replacement (Antal and Tillé, 2011b), 
+and it is called by setting \code{method = "over-replacement"}.
+The second one (Antal and Tillé, 2014) is the doubled half sampling, which is 
+simpler and quickier to compute, and can employed by setting
+\code{method = "doubled-half"}; this is the default option.
 }
 \keyword{internal}

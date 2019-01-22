@@ -16,7 +16,7 @@ an integer vector of size n, indicating how many times each unit is
 present in the sample
 }
 \description{
-Used for resampling procedures. Proposed by Antal and Till? (2011).
+Used for resampling procedures. Proposed by Antal and Tille' (2011).
 }
 \references{
 Antal, E.; Tillé, Y. (2011). Simple random sampling with over-replacement. 

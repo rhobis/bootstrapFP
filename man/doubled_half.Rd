@@ -2,7 +2,7 @@
 % Please edit documentation in R/AntalTille_UPS.R
 \name{doubled_half}
 \alias{doubled_half}
-\title{Select a doubled-half sampling (Antal and Till?, 2014)}
+\title{Select a doubled-half sampling (Antal and Tille', 2014)}
 \usage{
 doubled_half(n)
 }
@@ -14,6 +14,6 @@ an integer vector of size \code{n}, indicating how many times each unit is
 present in the sample
 }
 \description{
-Select a doubled-half sampling (Antal and Till?, 2014)
+Select a doubled-half sampling (Antal and Tille', 2014)
 }
 \keyword{internal}

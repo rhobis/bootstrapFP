@@ -1,8 +1,8 @@
 Package: bootstrapFP
 Type: Package
 Title: Bootstrap Algorithms for Finite Population Inference
-Version: 0.4.1
-Date: 2018-27-12
+Version: 0.4.2
+Date: 2019-01-22
 Authors@R: person("Roberto", "Sichera", email = "roberto.sichera@unipa.it", role = c("aut", "cre"))
 Description: Finite Population bootstrap algorithms to estimate the variance
     of the Horvitz-Thompson estimator for single-stage sampling. 

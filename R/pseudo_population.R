@@ -31,15 +31,16 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     
     
     ### Initialise quantities ---
+    tol <- .Machine$double.eps^0.5  
     n <- length(y)
     f <- n/N
     k <- switch(method,
                 Gross    = N/n,
-                Booth    = floor(N/n),
-                ChaoLo85 = floor(N/n),
-                ChaoLo94 = floor(N/n),
-                BickelFreedman = floor(N/n),
-                Sitter = floor( (N/n)*(1 - (1-f)/n) )
+                Booth    = floor(N/n + tol),
+                ChaoLo85 = floor(N/n) + tol,
+                ChaoLo94 = floor(N/n + tol),
+                BickelFreedman = floor(N/n + tol),
+                Sitter = floor( (N/n)*(1 - (1-f)/n) + tol)
                 )
 
     # finite part of pseudo-population
@@ -49,7 +50,7 @@ ppBS_srs <- function(y, N, B, D=1, method) {
     Vb <- vector('numeric', length = D)
     for(d in seq_len(D) ){
         
-        Uc <- select_Uc(y=y, N=N, n=n, method = method)
+        Uc <- select_Uc(y=y, N=N, n=n, k=k, method = method)
         U  <- c( Uf, Uc)
         n1 <- ifelse(is.null(Uc) & identical(method, 'Sitter'), n-1, n)
         
@@ -98,17 +99,18 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 ppBS_ups <- function(y, pik, B, D=1, method, smplFUN, x = NULL, s = NULL) {
     
     ### Check input ---
-    # method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
+    method <- match.arg(method, c('Holmberg', 'Chauvet', 'HotDeck') )
     
     
     ### Initialisation ---
     ## Create finite part of pseudo-population
     n <- length(y)
     if( identical(method, 'HotDeck') ){
-        U <- vector('numeric', length = length(x) )
+        D  <- 1
+        U  <- vector('numeric', length = length(x) )
         xs <- x[s]
         j  <- sapply(x[!s], function(xi) which.min( abs(xi-xs) ) )
-        U[s] <- y
+        U[s]  <- y
         U[!s] <- y[j]
         xb <- x
         xb[!s] <- xs[j]
@@ -123,7 +125,6 @@ ppBS_ups <- function(y, pik, B, D=1, method, smplFUN, x = NULL, s = NULL) {
     ### Bootstrap replicates ---
     Vb <- vector('numeric', length = D)
     for(d in seq_len(D) ){
-        
         tot <- vector('numeric', length = B)
         for(b in seq_len(B)){
             ## random part of pseudo-population
@@ -136,7 +137,7 @@ ppBS_ups <- function(y, pik, B, D=1, method, smplFUN, x = NULL, s = NULL) {
             }
             
             #select resample
-            sb <- smplFUN( pkb )
+            sb <- as.logical(smplFUN( pkb ))
             tot[b] <- drop( sampling::HTestimator(U[sb], pkb[sb]) )
         }
         Vb[d] <- var(tot)

@@ -1,8 +1,54 @@
-#' Antal and Tillé (2011) Bootstrap for Unequal Probability Sampling
+#' #' Antal and Tillé (2014) Bootstrap for Unequal Probability Sampling without replacement
+#' #' 
+#' #' Estimate the bootstrap variance of the Horvitz--Thompson estimator according to 
+#' #' Antal and Tillé (2014) direct bootstap method for Unequal Probability Sampling 
+#' #' without replacement and fixed sample size.
+#' #' Note that this method does not need a double bootstrap.
+#' #' 
+#' #' 
+#' #' 
+#' #' 
+#' #'
+#' #' @param ys values of the variable of interest for the original sample
+#' #' @param piks vector of first-order inclusion probabilities for sampled units
+#' #' @param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
+#' #' @param smplFUN a function that takes as input a vector of length N of 
+#' #' 
+#' #' 
+#' #' @return The bootstrap variance of the Horvitz-Thompson estimator.
+#' #' 
+#' #' 
+#' #' 
+#' #' 
+#' #' 
+#' #' @references 
+#' #' 
+#' #' Antal, E.; Tillé, Y., 2011. A Direct Bootstrap Method for Complex Sampling
+#' #' Designs From a Finite Population. Journal of the American Statistical Association, 106:494, 534-543,
+#' #' doi: 10.1198/jasa.2011.tm09767
+#' #' 
+#' #' Antal, E.; Tillé, Y., 2014. A new resampling method for sampling designs without
+#' #' replacement: the doubled half bootstrap. Computational Statistics, 29(5), 1345-1363.
+#' #' doi: 10.10007/s00180-014-0495-0
+#' 
+#' 
+#' AntalTille2014_UPS <- function(ys, piks, B){
+#'     
+#'     for( b in seq_len(B)){
+#'         S <- as.logical( sampling::UPpoisson(piks) )    
+#'     }
+#'     
+#' }
+#' 
+#' 
+
+
+
+#' Antal and Tillé (2011) Bootstrap for Unequal Probability Sampling without replacement
 #' 
 #' Draw B bootstrap samples according to Antal and Tillé (2011) direct
 #' bootstap method for Unequal Probability Sampling.
-#' Note that this method do not need a double bootstrap.
+#' Note that this method does not need a double bootstrap.
 #'
 #' @param ys values of the variable of interest for the original sample
 #' @param pks vector of first-order inclusion probabilities for sampled units
@@ -11,11 +57,12 @@
 #' inclusion probabilities and return a vector of length N, either logical or a 
 #' vector of 0s and 1s,  where \code{TRUE} or \code{1} indicate sampled
 #' units and \code{FALSE} or \code{0} indicate non-sample units.
-#' @param approx_method method used to approximate Dkk with function \code{Dkk_aprox()}
-#' @param ... added to ignore useless arguments
+#' @param approx_method method used to approximate the variance Dkk.
 #'
 #' @return a list of two elements, a vector of K average bootstrap totals and
 #' a vector of K variance estimates.
+#' 
+#' 
 #' 
 #' 
 #' @references 
@@ -30,39 +77,41 @@
 
 
 
-AntalTille_ups <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "DevilleTille"), ...) {
+AntalTille2011_ups <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "DevilleTille")) {
     
     ### Initialisation ---
     approx_method <- match.arg(approx_method)
     n    <- length(ys)
-    Dkk  <- Dkk_approx(pks, n, method=approx_method)
-    phi  <- (1 - Dkk)
+    
+    # Approximation of the Dkk quantity, see Antal and Tille' (2011)
+    if(identical(approx_method, "Hajek") ){
+        ck  <- (n/(n-1)) * (1-pks) 
+        Dkk <- ck - ck^2/sum(ck)
+    } else if( identical(approx_method, "DevilleTille") ){
+        #(a solution does not always exist)
+        Dkk <- 1-pks
+    } 
+    
+    phi  <- 1-Dkk
     n1   <- sum(phi)
-    case <- n - n1
+    case <- n-n1   #this value determines the algorithm to use (<2 or >=2)
     
     ht <- vector('numeric', length=B)
     
     if(case >= 2){
         ### CASE 1 (algorithm 4) -----------------------------------------------
-  
-        n1_int <- as.integer(n1)
-        if( n1 != n1_int ){
-            q    <- n1_int - n1 + 1
-            phi1 <- decompose_phi(phi)
-            rand_ind <- sample( x=1:2, size=1, prob=c(q, 1-q) )
-            m <- phi1[[ rand_ind ]][[2]]
-            phi1 <- phi1[[ rand_ind ]][[1]]
-        }
+        
+        phi <- define_phi(phi)
         
         ### Bootstrap ---
         for( b in seq_len(B) ){
             #step 1
-            S <- smplFUN(phi1)
-            ind_not_S <- which( S == 0 )
+            S <- as.logical(smplFUN(phi))
             #step 2
-            oos <- one_one( n = length(ind_not_S) ) 
+            ind_not_S <- which( S == 0 )
+            oos <- one_one( n = length(ind_not_S) ) # one-one sampling
             #step 3
-            S[ind_not_S] <- S[ind_not_S] + oos
+            S[ind_not_S] <- oos
             
             # compute HT estimate
             ht[b] <- sum(S * ys/pks)
@@ -78,7 +127,7 @@ AntalTille_ups <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "Devi
         for( b in seq_len(B)){
             u   <- runif(1)
             if( u <= q){ #step 2
-                S <- smplFUN(psi)
+                S <- as.logical(smplFUN(psi))
                 oos <- one_one( n = 2 )
                 ind_not_S <- which( S == 0)
                 S[ ind_not_S ] <- S[ ind_not_S ] + oos
@@ -95,45 +144,23 @@ AntalTille_ups <- function(ys, pks, B, smplFUN, approx_method = c("Hajek", "Devi
 }
 
 
-### ----------------------------------------------------------------------------
-#' Approximation of the Dkk quantity 
-#' 
-#' see Antal and Till? (2011)
-#' 
-#' @param pks vector of first-order inclusion probabilities for sampled units
-#' @param n integer, the sample size
-#' @param method a string indicating which approximation method is to be used
-#' 
-#' @return a numeric vector with approximated Dkk
-#' 
-#' @keywords internal
-
-Dkk_approx <- function(pks, n, method=c("Hajek", "DevilleTille")) {
-    
-    method <- match.arg(method)
-    
-    if(method == "Hajek"){
-        ck  <- (n/(n-1)) * (1-pks) 
-        Dkk <- ck - (ck*ck / sum(ck))
-    } else if(method == "DevilleTille" ){
-        if(n>2){
-            Dkk <- (1-pks)    
-        } else stop("Deville and Tille's method does not converge for n=2")
-    } 
-    
-    return(Dkk)
-}
 
 
 ### ----------------------------------------------------------------------------
-#' Decompose phi vector
+#' Define the phi vector
 #' 
-#' Decompose vector phi in a convex combination of two vectors phi1 and phi2, 
-#' such that the sum of $phi1_i$ is the integer part of phi and the sum of $phi2_i$
-#' is the integer part of phi plus 1 (see Antal and Till? (2011) bootstrap procedure
-#' for unequal probability sampling, p. 539 - Algorithm 4, Case 1) 
+#' Define the phi vector used to select the first sample in Antal & Tillé (2011)
+#' bootstrap (algorithm 4, first step).
+#' If the sum of the elements of \eqn{\phi}{phi} is not an integer, phi is decomposed 
+#' in a convex combination of two vectors \eqn{\phi_1}{phi1} and \eqn{\phi_2}{phi2}, 
+#' such that the sum of \eqn{\phi_1i}{phi1_i} is the integer part of \eqn{\sum phi_i}{sum(phi_i)} 
+#' and the sum of \eqn{\phi_2i}{phi2_i} is the integer part of \eqn{\sum phi_i}{sum(phi_i)} plus 1 
+#' [see Antal and Tille' (2011) bootstrap procedure
+#' for unequal probability sampling, p. 539 - Algorithm 4, Case 1]
+#' The procedure used to decompose the vector \eqn{\phi}{phi} is described in the 
+#' answer to this question: https://math.stackexchange.com/questions/2700483/vector-decomposition-into-a-convex-combination-of-two-vectors-with-constraints-o
 #' 
-#' @param phi vector of inclusion probabilities for Antal and Till? (2011) bootstrap, 
+#' @param phi vector of inclusion probabilities for Antal and Tillé (2011) bootstrap, 
 #' given by 1 - D_kk
 #' 
 #' @return a list with the two vectors in which \code{phi} is decomposed
@@ -141,21 +168,34 @@ Dkk_approx <- function(pks, n, method=c("Hajek", "DevilleTille")) {
 #' 
 #' @keywords internal
 
-decompose_phi <- function(phi) {
+define_phi <- function(phi) {
     ### Initial values ---
-    nphi   <- sum(phi)
-    m1     <- as.integer(nphi)
-    m2     <- m1 + 1
-    u      <- runif(length(phi)) #random vector with sum != 0
+    np <- sum(phi)
     
-    ### Decompose vector phi
-    phi1   <- phi + (m1 - nphi) * u/sum(u)
-    phi2   <- phi + (m2 - nphi) * u/sum(u)
-    
-    ### Return results ---
-    return( list(phi1 = list(phi = phi1, m = m1),
-                 phi2 = list(phi = phi2, m = m2))
-    )
+    if( is_wholenumber(np)) {
+        
+        return(phi)
+        
+    } else {
+        
+        m1 <- as.integer(np)
+        m2 <- m1 + 1
+        # u <- runif(length(phi)) #random vector with sum != 0
+        u  <- rep(1, length(phi))
+        
+        ### Decompose vector phi
+        ur    <- u/sum(u)
+        phi1  <- phi + (m1 - np)*ur
+        phi2  <- phi + (m2 - np)*ur
+        
+        ### Randomly draw either phi1 or phi2
+        q    <- m1 - np + 1
+        r    <- sample( x=1:2, size=1, prob=c(q, 1-q) )
+        out  <- if(r==1) phi1 else phi2
+        
+        return( out )
+        
+    }
 }
 
 
@@ -163,20 +203,20 @@ decompose_phi <- function(phi) {
 #' Select a one-one sampling 
 #' 
 #' A one-one sampling is a design for which the random variables Sk, representing
-#' the number of times unit k is present in the sample, have expectation and
-#' variance equal to 1. Proposed by Antal and Till? (2011, 2014).
+#' the number of times unit k is included in the sample, have expectation and
+#' variance equal to 1. Proposed by Antal and Tille' (2011, 2014).
 #' 
 #' @param n integer, the sample size
-#' @param method algorithm to be used, currently, only the doubled half sampling
-#' is implemented (Antal and Till?, 2014). See Details section.
+#' @param method algorithm to be used, either doubled half sampling or srs with over-replacement. 
+#' See the Details section.
 #' 
-#' @details Antal and Till? proposed two procedures that lead to one-one samplings.
-#' The first one (Antal and Till?, 2011a) in more complex and makes use of a simple 
-#' random Sampling with over-replacement (Antal and Till?, 2011b), 
-#' and it is called by setting \code{method = "over-replacement"};
-#' the second one (Antal and Till?, 2014) is the doubled half sampling, which is 
-#' simpler and quickier to compute, it can be called by setting
-#' \code{method = "doubled-half"} and is the default option.
+#' @details Antal and Tillé proposed two procedures that lead to one-one samplings.
+#' The first one (Antal and Tillé, 2011a) in more complex and makes use of a simple 
+#' random Sampling with over-replacement (Antal and Tillé, 2011b), 
+#' and it is called by setting \code{method = "over-replacement"}.
+#' The second one (Antal and Tillé, 2014) is the doubled half sampling, which is 
+#' simpler and quickier to compute, and can employed by setting
+#' \code{method = "doubled-half"}; this is the default option.
 #' 
 #' @return an integer vector of size \code{n}, indicating how many times each unit is
 #' present in the sample
@@ -192,8 +232,11 @@ one_one <- function(n, method = c("doubled-half", "over-replacement") ){
     method <- match.arg(method)
     
     if(method == "doubled-half"){
+        
         S <- doubled_half( n )
+        
     }else if(method == "over-replacement"){
+        
         if( n == 2 ){
             S <- vector( 'integer', length = n )
             ind <- sample( 1:2, size=1)
@@ -210,6 +253,7 @@ one_one <- function(n, method = c("doubled-half", "over-replacement") ){
             sA <- drop( rmultinom(1, size = (n-nt), prob = rep(1/n, n)) )
             #step 5
             S <- sA + sB
+            
         }
     }else stop("Incorrect choice of method.")
     
@@ -218,7 +262,7 @@ one_one <- function(n, method = c("doubled-half", "over-replacement") ){
 
 
 ### ----------------------------------------------------------------------------
-#' Select a doubled-half sampling (Antal and Till?, 2014)
+#' Select a doubled-half sampling (Antal and Tille', 2014)
 #' 
 #' @param n integer scalar representing sample size
 #' 
@@ -255,7 +299,7 @@ doubled_half <- function( n ){
 ### ----------------------------------------------------------------------------
 #' Select a simple random sampling with over-replacement 
 #' 
-#' Used for resampling procedures. Proposed by Antal and Till? (2011).
+#' Used for resampling procedures. Proposed by Antal and Tille' (2011).
 #' 
 #' @param N integer, the population size
 #' @param n integer, the sample size

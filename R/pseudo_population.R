@@ -13,6 +13,8 @@
 #' @references
 #' Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
 #' finite population sampling. Statistics Surveys 10 1-52.
+#' 
+#' @keywords internal
 
 ppBS_srs <- function(y, N, B, D=1, method) {
     
@@ -95,6 +97,8 @@ ppBS_srs <- function(y, N, B, D=1, method) {
 #' Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
 #' finite population sampling. Statistics Surveys 10 1-52.
 #' 
+#' 
+#' @keywords internal
 
 ppBS_ups <- function(y, pik, B, D=1, method, smplFUN, x = NULL, s = NULL) {
     

@@ -34,3 +34,4 @@ for complex surveys. Journal of the American Statistical Association, 83(401), 6
 Chipperfield J.; Preston J. (2007).Efficient bootstrap for business surveys.
 Survey Methodology, 33(2), 167-172.
 }
+\keyword{internal}

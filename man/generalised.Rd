@@ -33,3 +33,4 @@ Beaumont, J. F., & Patak, Z. (2012). On the generalized bootstrap for sample
 surveys with special attention to Poisson sampling. 
 International Statistical Review, 80(1), 127-148.
 }
+\keyword{internal}

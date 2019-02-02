@@ -28,3 +28,4 @@ See Mashreghi et al. (2016) for details about these bootstrap methods.
 Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
 finite population sampling. Statistics Surveys 10 1-52.
 }
+\keyword{internal}

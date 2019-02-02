@@ -1,49 +1,3 @@
-#' #' Antal and Tillé (2014) Bootstrap for Unequal Probability Sampling without replacement
-#' #' 
-#' #' Estimate the bootstrap variance of the Horvitz--Thompson estimator according to 
-#' #' Antal and Tillé (2014) direct bootstap method for Unequal Probability Sampling 
-#' #' without replacement and fixed sample size.
-#' #' Note that this method does not need a double bootstrap.
-#' #' 
-#' #' 
-#' #' 
-#' #' 
-#' #'
-#' #' @param ys values of the variable of interest for the original sample
-#' #' @param piks vector of first-order inclusion probabilities for sampled units
-#' #' @param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
-#' #' @param smplFUN a function that takes as input a vector of length N of 
-#' #' 
-#' #' 
-#' #' @return The bootstrap variance of the Horvitz-Thompson estimator.
-#' #' 
-#' #' 
-#' #' 
-#' #' 
-#' #' 
-#' #' @references 
-#' #' 
-#' #' Antal, E.; Tillé, Y., 2011. A Direct Bootstrap Method for Complex Sampling
-#' #' Designs From a Finite Population. Journal of the American Statistical Association, 106:494, 534-543,
-#' #' doi: 10.1198/jasa.2011.tm09767
-#' #' 
-#' #' Antal, E.; Tillé, Y., 2014. A new resampling method for sampling designs without
-#' #' replacement: the doubled half bootstrap. Computational Statistics, 29(5), 1345-1363.
-#' #' doi: 10.10007/s00180-014-0495-0
-#' 
-#' 
-#' AntalTille2014_UPS <- function(ys, piks, B){
-#'     
-#'     for( b in seq_len(B)){
-#'         S <- as.logical( sampling::UPpoisson(piks) )    
-#'     }
-#'     
-#' }
-#' 
-#' 
-
-
-
 #' Antal and Tillé (2011) Bootstrap for Unequal Probability Sampling without replacement
 #' 
 #' Draw B bootstrap samples according to Antal and Tillé (2011) direct
@@ -74,6 +28,10 @@
 #' Antal, E.; Tillé, Y., 2014. A new resampling method for sampling designs without
 #' replacement: the doubled half bootstrap. Computational Statistics, 29(5), 1345-1363.
 #' doi: 10.10007/s00180-014-0495-0
+#' 
+#' 
+#'
+#' @keywords internal
 
 
 

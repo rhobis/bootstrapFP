@@ -15,6 +15,9 @@
 #' 
 #' 
 #' @importFrom stats rbinom
+#' 
+#' 
+#' @keywords internal
 
 
 

@@ -37,3 +37,4 @@ Pseudo-population bootstrap for simple random sampling
 Mashreghi Z.; Haziza D.; Léger C., 2016. A survey of bootstrap methods in 
 finite population sampling. Statistics Surveys 10 1-52.
 }
+\keyword{internal}

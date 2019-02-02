@@ -25,6 +25,8 @@
 #'
 #' @importFrom stats rnorm runif
 #' 
+#' 
+#' @keywords internal
 
 
 

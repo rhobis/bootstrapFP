@@ -23,7 +23,8 @@
 #'Survey Methodology, 33(2), 167-172.
 #'
 #'
-#' 
+#'
+#' @keywords internal
 
 
 

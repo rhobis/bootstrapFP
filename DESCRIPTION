@@ -3,7 +3,7 @@ Type: Package
 Title: Bootstrap Algorithms for Finite Population Inference
 Version: 0.4.3
 Date: 2019-02-24
-Authors@R: person("Roberto", "Sichera", email = "roberto.sichera@unipa.it", role = c("aut", "cre"))
+Authors@R: person("Roberto", "Sichera", email = "rob.sichera@gmail.com", role = c("aut", "cre"))
 Description: Finite Population bootstrap algorithms to estimate the variance
     of the Horvitz-Thompson estimator for single-stage sampling. 
     For a survey of bootstrap methods for finite populations, see Mashreghi et Al. (2016) <doi:10.1214/16-SS113>.
@@ -11,6 +11,6 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 BugReports: https://github.com/rhobis/bootstrapFP/issues
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 Imports:
     sampling

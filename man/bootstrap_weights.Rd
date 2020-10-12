@@ -4,8 +4,7 @@
 \alias{bootstrap_weights}
 \title{Bootstrap with Adjusted Weights}
 \usage{
-bootstrap_weights(ys, N, B, method = c("RaoWuYue",
-  "ChipperfieldPreston"))
+bootstrap_weights(ys, N, B, method = c("RaoWuYue", "ChipperfieldPreston"))
 }
 \arguments{
 \item{ys}{values of the variable of interest for the original sample}

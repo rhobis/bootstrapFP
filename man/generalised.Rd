@@ -4,8 +4,12 @@
 \alias{generalised}
 \title{Generalised Bootstrap}
 \usage{
-generalised(ys, pks, B, distribution = c("uniform", "normal",
-  "exponential", "lognormal"))
+generalised(
+  ys,
+  pks,
+  B,
+  distribution = c("uniform", "normal", "exponential", "lognormal")
+)
 }
 \arguments{
 \item{ys}{values of the variable of interest for the original sample}

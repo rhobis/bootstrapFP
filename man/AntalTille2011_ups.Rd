@@ -4,8 +4,13 @@
 \alias{AntalTille2011_ups}
 \title{Antal and Tillé (2011) Bootstrap for Unequal Probability Sampling without replacement}
 \usage{
-AntalTille2011_ups(ys, pks, B, smplFUN, approx_method = c("Hajek",
-  "DevilleTille"))
+AntalTille2011_ups(
+  ys,
+  pks,
+  B,
+  smplFUN,
+  approx_method = c("Hajek", "DevilleTille")
+)
 }
 \arguments{
 \item{ys}{values of the variable of interest for the original sample}

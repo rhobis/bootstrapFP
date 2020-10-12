@@ -3,11 +3,19 @@
 \docType{package}
 \name{bootstrapFP}
 \alias{bootstrapFP}
-\alias{bootstrapFP-package}
 \title{Bootstrap algorithms for Finite Population sampling}
 \usage{
-bootstrapFP(y, pik, B, D = 1, method, design, x = NULL, s = NULL,
-  distribution = "uniform")
+bootstrapFP(
+  y,
+  pik,
+  B,
+  D = 1,
+  method,
+  design,
+  x = NULL,
+  s = NULL,
+  distribution = "uniform"
+)
 }
 \arguments{
 \item{y}{vector of sample values}

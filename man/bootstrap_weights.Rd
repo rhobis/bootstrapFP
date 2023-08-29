@@ -15,8 +15,6 @@ bootstrap_weights(ys, N, B, method = c("RaoWuYue", "ChipperfieldPreston"))
 
 \item{method}{a string indicating the bootstrap method to be used; 
 available methods are "RaoWuYue" and "ChipperfieldPreston".}
-
-\item{...}{added to ignore useless arguments}
 }
 \value{
 a list of two elements, a vector of K average bootstrap totals and

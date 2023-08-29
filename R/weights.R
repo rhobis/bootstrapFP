@@ -8,7 +8,6 @@
 #'@param B integer scalar, number of bootstrap resamples to draw from the pseudo-population
 #'@param method a string indicating the bootstrap method to be used; 
 #'       available methods are "RaoWuYue" and "ChipperfieldPreston".
-#'@param ... added to ignore useless arguments
 #'
 #'@return a list of two elements, a vector of K average bootstrap totals and
 #'a vector of K variance estimates.

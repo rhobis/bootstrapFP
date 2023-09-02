@@ -1,22 +1,17 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-bootstrapFP
-===========
+# bootstrapFP
 
-[![Build Status](https://travis-ci.com/rhobis/bootstrapFP.svg?branch=master)](https://travis-ci.com/rhobis/bootstrapFP)
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/bootstrapFP)](https://cran.r-project.org/package=bootstrapFP)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/bootstrapFP)](https://cran.r-project.org/package=bootstrapFP)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/bootstrapFP)](https://cran.r-project.org/package=bootstrapFP)
-[![R badge](https://img.shields.io/badge/-Support%20me-brightgreen)](https://www.buymeacoffee.com/rhobis)
 
-Description
------------
+## Description
 
 This package provides bootstrap algorithms for Finite Population
 inference, for estimating the variance of the Horvitz–Thompson
 estimator.
 
-Installation
-------------
+## Installation
 
 To install the package from CRAN, run the following code in *R*:
 
@@ -32,8 +27,7 @@ install.packages("devtools")
 devtools::install_github("rhobis/bootstrapFP")
 ```
 
-Usage
------
+## Usage
 
 ``` r
 library(bootstrapFP) 
@@ -59,16 +53,9 @@ bootstrapFP(y = y[s], pik = n/N, B=10, method = "wChipperfieldPreston")
 bootstrapFP(y = y[s], pik = pik[s], B=10, method = "wGeneralised", distribution = 'normal')
 ```
 
-More
-----
+## More
 
--   Please, report any bug or issue
-    [here](https://github.com/rhobis/bootstrapFP/issues).
--   For more information, please contact the maintainer at `rob.sichera@gmail.com`.
-
-
-<br/>
-
-<a href="https://www.buymeacoffee.com/rhobis" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="217" height="60"></a>
-
-<br/>
+- Please, report any bug or issue
+  [here](https://github.com/rhobis/bootstrapFP/issues).
+- For more information, please contact the maintainer at
+  `roberto.sichera@unipa.it`.

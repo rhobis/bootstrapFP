@@ -1,7 +1,7 @@
 Package: bootstrapFP
 Type: Package
 Title: Bootstrap Algorithms for Finite Population Inference
-Version: 0.4.5
+Version: 0.4.5.9000
 Date: 2023-08-26
 Authors@R: person("Roberto", "Sichera", email = "rob.sichera@gmail.com", role = c("aut", "cre"))
 Description: Finite Population bootstrap algorithms to estimate the variance
@@ -10,6 +10,6 @@ Description: Finite Population bootstrap algorithms to estimate the variance
 License: GPL-3
 Encoding: UTF-8
 BugReports: https://github.com/rhobis/bootstrapFP/issues
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports:
     sampling

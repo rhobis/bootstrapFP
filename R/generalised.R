@@ -23,7 +23,7 @@
 #'International Statistical Review, 80(1), 127-148.
 #'
 #'
-#' @importFrom stats rnorm runif
+#' @importFrom stats rnorm runif rexp
 #' 
 #' 
 #' @keywords internal

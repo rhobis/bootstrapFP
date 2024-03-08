@@ -13,6 +13,6 @@ select_Uc(..., method)
 }
 \description{
 Helper function that generates the fixed part of a pseudo-population in 
-function /code{ppBS_srs()}.
+function \code{ppBS_srs()}.
 }
 \keyword{internal}

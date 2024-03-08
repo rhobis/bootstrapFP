@@ -21,7 +21,7 @@ is_wholenumber <- function(x, tol = .Machine$double.eps^0.5){
 #' Select the random part of a pseudo-population
 #' 
 #' Helper function that generates the fixed part of a pseudo-population in 
-#' function /code{ppBS_srs()}.
+#' function \code{ppBS_srs()}.
 #' 
 #' @param ... parameters of the function, depending on the bootstap method chosen.
 #' @param method string indicating the bootstrap method

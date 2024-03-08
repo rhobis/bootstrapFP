@@ -23,7 +23,7 @@
 #'International Statistical Review, 80(1), 127-148.
 #'
 #'
-#' @importFrom stats rnorm runif
+#' @importFrom stats rnorm runif rexp
 #' 
 #' 
 #' @keywords internal
@@ -53,7 +53,7 @@ generalised <- function(ys,
                                   a <- runif(n, 1-q, 1+q)
                                },
                "normal"      = {  a <- rnorm(n, 1, 1-pks) },
-               "exponential" = {  a <- 1 + ( exp(n)-1 ) * sqrt(1-pks)},
+               "exponential" = {  a <- 1 + ( rexp(n)-1 ) * sqrt(1-pks)},
                "lognormal"   = {  q <- log(2-pks)
                                   a <- exp( rnorm(n, -0.5*q, q) )
                                }
